@@ -15,12 +15,22 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      - name: Install Az PowerShell Module
-        run: Install-Module Az -Force
-
       - name: Authenticate to Azure AD
         run: |
-          $Password = ConvertTo-SecureString '${{ secrets.CLIENTSECRET }}' -AsPlainText -Force
-          $Credential = New-Object System.Management.Automation.PSCredential -ArgumentList('${{ secrets.APPID }}',$Password)
-          Connect-AzAccount -ServicePrincipal -Tenant ${{ secrets.TENANTID }} -Credential $Credential
-
+          #$Password = ConvertTo-SecureString '${{ secrets.CLIENTSECRET }}' -AsPlainText -Force
+          #$Credential = New-Object System.Management.Automation.PSCredential -ArgumentList('${{ secrets.APPID }}',$Password)
+          #Connect-AzAccount -ServicePrincipal -Tenant ${{ secrets.TENANTID }} -Credential $Credential
+          $ApplicationId = '${{ secrets.APPID }}'
+          $TenantId = '${{ secrets.TENANTID }}'
+          $ClientSecret = '${{ secrets.CLIENTSECRET }}'
+          $Body = @{
+            Grant_Type    = 'client_credentials'
+            Scope         = 'https://graph.microsoft.com/.default'
+            Client_Id     = $ApplicationId
+            Client_Secret = $ClientSecret
+          }
+          $LoginUri = "https://login.microsoft.com/$TenandId/oauth2/v2.0/token"
+          $ConnectGraph = Invoke-RestMethod -Uri $LoginUri -Method Post -Body $Body
+          $Token = $ConnectGraph.access_token
+          $Token
+      
