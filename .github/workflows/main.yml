@@ -12,6 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Run a one-line script
-        run: $PSVersionTable
+      - name: Authenticate to Azure AD
+        run: |
+          $Password = ConvertTo-SecureString '${{ secrets.CLIENTSECRET }}' -AsPlainText -Force
+          $Credential = New-Object System.Management.Automation.PSCredential -ArgumentList('${{ secrets.APPID }}',$Password)
+          Connect-AzAccount -ServicePrincipal -Tenant ${{ secrets.TENANTID }} -Credential $Credential
         shell: pwsh
