@@ -32,5 +32,8 @@ jobs:
           $LoginUri = "https://login.microsoftonline.com/$TenantId/oauth2/v2.0/token"
           $ConnectGraph = Invoke-RestMethod -Uri $LoginUri -Method Post -Body $Body
           $Token = $ConnectGraph.access_token
-          $Token
-      
+          
+      - name: Execute Query
+        run: |
+          $TeamsReportUri = "https://graph.microsoft.com/beta/reports/getTeamsUserActivityUserDetail(period='D7')"
+          Invoke-RestMethod -Headers @{Authorization = "Bearer ${Token}"} -Uri $TeamsReportUri -Method Get
