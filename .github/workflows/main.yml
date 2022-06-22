@@ -8,13 +8,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
 
     steps:
       - uses: actions/checkout@v3
+      
+      - name: Install Az PowerShell Module
+        run: Install-Module Az -Force
 
       - name: Authenticate to Azure AD
         run: |
           $Password = ConvertTo-SecureString '${{ secrets.CLIENTSECRET }}' -AsPlainText -Force
           $Credential = New-Object System.Management.Automation.PSCredential -ArgumentList('${{ secrets.APPID }}',$Password)
           Connect-AzAccount -ServicePrincipal -Tenant ${{ secrets.TENANTID }} -Credential $Credential
-        shell: pwsh
+
