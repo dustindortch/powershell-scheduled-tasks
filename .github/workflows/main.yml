@@ -3,6 +3,8 @@
 name: Microsoft Graph Query
 
 on:
+  schedule:
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -17,9 +19,6 @@ jobs:
       
       - name: Authenticate to Azure AD
         run: |
-          #$Password = ConvertTo-SecureString '${{ secrets.CLIENTSECRET }}' -AsPlainText -Force
-          #$Credential = New-Object System.Management.Automation.PSCredential -ArgumentList('${{ secrets.APPID }}',$Password)
-          #Connect-AzAccount -ServicePrincipal -Tenant ${{ secrets.TENANTID }} -Credential $Credential
           $ApplicationId = '${{ secrets.APPID }}'
           $TenantId = '${{ secrets.TENANTID }}'
           $ClientSecret = '${{ secrets.CLIENTSECRET }}'
